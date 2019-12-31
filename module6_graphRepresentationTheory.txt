@@ -1,0 +1,595 @@
+Sub Show_DateWise_Graph()
+
+Dim getd As Date
+Dim temp_string As String
+Dim r1 As Range
+Sheets("sheet2").Select
+temp_string = InputBox("Enter date")
+
+' this 2 lines of code is for error handling such that if user clicks cancel no further code should be executed
+
+If temp_string = "" Then
+Exit Sub
+
+ElseIf IsDate(temp_string) = False Then
+    MsgBox ("Please Enter Valid Input")
+    Exit Sub
+
+
+
+Else
+    getd = temp_string
+    
+    Sheets("sheet2").Select
+    Set r1 = Range("D4")
+    r1.Select
+
+        Do While r1.Value <> getd
+
+            Set r1 = r1.Offset(0, 1)
+            On Error GoTo ErrorHandler
+        Loop
+
+
+
+    MsgBox ("Do you want to see graph of this " & r1.Value & " date")
+
+    Set r1 = r1.Offset(2, 0)
+    r1.Select
+    
+    
+    
+    'initializing required variables
+    Dim Pcount As Integer
+    Dim Acount As Integer
+    Pcount = 0
+    Acount = 0
+    
+    
+        Do While r1.Value <> ""
+    
+            'get the count of A/P by comparing each cell value uptil end
+            If (r1.Value = "P") Then
+                Pcount = Pcount + 1
+
+            ElseIf (r1.Value = "A") Then
+                Acount = Acount + 1
+            
+            End If
+    
+            Set r1 = r1.Offset(1, 0)
+            
+        Loop
+
+    'select sheet to put obtained value
+    Sheets("sheet6").Select
+    'create the temp table first any fixed position then
+    'select the address of cell Absent/Present and assign  obtained values to it
+    Range("E6").Value = Pcount
+    Range("F6").Value = Acount
+    
+
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!IMPORTANT NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+'after creating temp table in excel we can create gragh by grabing values from that temp table else we cant directly pass values to graph,the values must be appering on the sheet.
+'now lets use this values to create graph
+
+
+
+  ActiveSheet.Shapes.AddChart2(251, xlPie).Select
+    ActiveChart.SetSourceData Source:=Range("Sheet6!$D$5:$F$6")
+    ActiveChart.ApplyLayout (2)
+    ActiveChart.ChartArea.Select
+    
+ Exit Sub
+ 
+ErrorHandler:
+  MsgBox ("!!ERROR The Input You Provided Might Not Exists!!")
+ 
+End If
+End Sub
+
+
+
+Sub DeleteallCharts()
+Dim chtObj As ChartObject
+For Each chtObj In ActiveSheet.ChartObjects
+chtObj.Delete
+Next
+End Sub
+
+
+
+
+
+
+Sub Show_DateWise_Male_Female_Graph()
+
+
+Dim getd As Date
+Dim temp_string As String
+Dim r1 As Range
+Dim count As Integer
+
+temp_string = InputBox("Enter date")
+
+' this 2 lines of code is for error handling such that if user clicks cancel no further code should be executed
+
+
+If IsDate(temp_string) = False Then
+
+    MsgBox ("Please Enter Valid Input")
+    Exit Sub
+
+
+
+Else
+    getd = temp_string
+    
+    Sheets("sheet2").Select
+    Set r1 = Range("D4")
+    r1.Select
+    
+    count = 0                   'setting count to 0 initially (this variable will count how many date we have passed on which does not match to given input date)'inshort it hepls to offset to column gender
+        Do While r1.Value <> getd
+            count = count + 1
+            Set r1 = r1.Offset(0, 1)
+            On Error GoTo ErrorHandler
+        Loop
+    count = count + 1           'just adding +1 because later we want to offset by +1 what we get in count to reach gender field
+
+    MsgBox ("Do you want to see graph of this " & r1.Value & " date")           ' let the user know what date he has selected
+
+    Set r1 = r1.Offset(2, 0)                'offset by 2 rows since A/P starts just 2 rows below of date field
+    r1.Select
+    
+    
+    'initializing required variables
+    Dim Pcount As Integer
+    Dim Acount As Integer
+    Dim Mcount As Integer
+    Dim Fcount As Integer
+    
+    PMcount = 0             'PMcount stands for PresentMaleCount
+    PFcount = 0             'PMcount stands for PresentFemaleCount
+    AMcount = 0             'AMcount stands for AbsentMaleCount
+    AFcount = 0             'similarly AFcount stands for AbsentFemaleCount
+    
+        Do While r1.Value <> ""
+    
+            'get the count of A/P by comparing each cell value uptil end
+            If (r1.Value = "P") Then
+                
+                Set r1 = r1.Offset(0, -count)
+                    
+                    If (r1.Value = "M" Or r1.Value = "m") Then
+                        PMcount = PMcount + 1
+                        Set r1 = r1.Offset(0, count)
+                    ElseIf (r1.Value = "F" Or r1.Value = "f") Then
+                        PFcount = PFcount + 1
+                        Set r1 = r1.Offset(0, count)
+                    Else                                            '   IF cell contains different value than M/F this code will skip that rows and head to the next one.   NOTE :it will not affect final result of other correct fields of M/F.
+                        Set r1 = r1.Offset(0, count)                '
+                    End If
+                    
+            ElseIf (r1.Value = "A") Then
+              
+                Set r1 = r1.Offset(0, -count)
+                    
+                    If (r1.Value = "M" Or r1.Value = "m") Then
+                        AMcount = AMcount + 1
+                          Set r1 = r1.Offset(0, count)
+                    ElseIf (r1.Value = "F" Or r1.Value = "f") Then
+                        AFcount = AFcount + 1
+                          Set r1 = r1.Offset(0, count)
+                    Else
+                        Set r1 = r1.Offset(0, count)
+                    End If
+            
+            Else: GoTo Line1                                           '   IF cell contains different value than P/A this code will skip that rows and head to the next one.   NOTE :it will not affect final result of other correct fields of P/A.
+              
+                    
+            End If
+    
+Line1:                     Set r1 = r1.Offset(1, 0)
+            
+        Loop
+
+
+
+ 'select sheet to put obtained value
+    Sheets("sheet6").Select
+    'create the temp table first any fixed position then
+    'select the address of cell Absent/Present and assign  obtained values to it
+    Range("E12").Value = PMcount
+    Range("F12").Value = PFcount
+    Range("G12").Value = AMcount
+    Range("H12").Value = AFcount
+    
+
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!IMPORTANT NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+'after creating temp table in excel we can create gragh by grabing values from that temp table else we cant directly pass values to graph,the values must be appering on the sheet.
+'now lets use this values to create graph
+
+
+    ActiveSheet.Shapes.AddChart2(251, xlPie).Select
+    ActiveChart.SetSourceData Source:=Range("Sheet6!$D$11:$H$12")
+    ActiveChart.ApplyLayout (2)
+    ActiveChart.Legend.Select
+    ActiveChart.Legend.LegendEntries(2).Select
+    ActiveChart.Legend.LegendEntries(1).Select
+    ActiveChart.Legend.LegendEntries(3).Select
+    ActiveChart.Legend.LegendEntries(4).Select
+    With Selection.Format.TextFrame2.TextRange.Font
+        .BaselineOffset = 0
+        .Size = 12
+    End With
+    ActiveChart.Legend.LegendEntries(2).Select
+    With Selection.Format.TextFrame2.TextRange.Font
+        .BaselineOffset = 0
+        .Size = 11
+    End With
+
+
+
+
+
+
+
+
+
+Exit Sub
+
+ErrorHandler:
+  MsgBox ("!!ERROR The Input You Provided Does Not Exist In Record!!")
+  Sheets("sheet6").Select
+  
+
+End If
+End Sub
+
+
+
+Sub overall_graph()
+
+Dim r10 As Range
+Dim r11 As Range
+Dim r12 As Range
+Dim num As Integer
+Dim countrollno As Integer
+Dim count1 As Integer
+Dim Pcount As Integer
+Dim Acount As Integer
+Dim tempdate As Date
+Dim Ncount As Integer
+Dim N1count As Integer
+Dim str, str1, str2, str3 As String
+
+Pcount = 0
+Acount = 0
+countrollno = 0
+count1 = 0
+num = 0                                         'till this number loop runs,(assign total no of possible lectures that could be conducted)
+Ncount = 0
+N1count = 0
+Sheets("sheet2").Select
+Set r10 = Range("A6")
+r10.Select
+
+
+
+
+
+Do While r10.Value <> ""
+    countrollno = countrollno + 1
+    Set r10 = r10.Offset(1, 0)
+    
+Loop
+   ' MsgBox (countrollno) '''delete this later
+
+
+Set r10 = Range("D4")           ' reprsents initial starting date cell in sheet
+r10.Select
+
+
+
+
+
+
+Do While num < 50
+  Sheets("sheet2").Select
+Pcount = 0
+Acount = 0
+    num = num + 1
+    
+    
+    If (r10.Value = "") Then
+      
+      
+'       str = ActiveCell.Address         'gathering data of empty cells of date row
+'       str2 = "   "                     'concanating spcaes in between
+'       str3 = str3 & str2 & str         'and concatinating all empty cell addresses in one string. results are displayed in msgbox after whole calculation
+'
+'
+       
+       
+        Set r10 = r10.Offset(0, 1)
+        r10.Select
+        
+    Else
+    
+            
+    tempdate = r10.Value                        'getting date and saving it to temp table
+    Sheets("sheet6").Select
+    Set r11 = Range("E14")                       '
+    Set r11 = r11.Offset(0, Ncount)             '
+    r11.Value = tempdate                        '
+    Ncount = Ncount + 1                         '
+    
+    
+    
+        Sheets("sheet2").Select
+        Set r10 = r10.Offset(2, 0)
+        r10.Select
+                count1 = 0
+        Do While count1 < countrollno
+            count1 = count1 + 1
+            If (r10.Value = "") Then
+                GoTo line2
+            Else
+                If (r10.Value = "P") Then
+                    Pcount = Pcount + 1
+                    'MsgBox (r10.Value)
+                    
+                ElseIf (r10.Value = "A") Then
+                    Acount = Acount + 1
+                    'MsgBox (r10.Value)
+                End If
+            End If
+                Set r10 = r10.Offset(1, 0)
+                r10.Select
+        Loop
+        
+        
+        Set r10 = r10.Offset(-countrollno, 1)
+        r10.Select
+        Set r10 = r10.Offset(-2, 0)
+        r10.Select
+       
+    
+      
+           Sheets("sheet6").Select
+        Set r12 = Range("E15")
+        Set r12 = r12.Offset(0, N1count)
+        r12.Value = Pcount
+        
+        Set r12 = Range("E16")
+        Set r12 = r12.Offset(0, N1count)
+        r12.Value = Acount
+        
+        N1count = N1count + 1
+    End If
+
+Loop
+
+'If str3 = "" Then
+'Exit Sub
+'Else
+'  MsgBox ("Dates are Missing for following cells,please fill to see results of those dates on graph  " & str3)
+'End If
+
+ Sheets("sheet6").Select
+
+Dim r15 As Range
+Dim str6 As String
+Set r15 = Range("E14")
+
+Do While r15.Value <> ""
+Set r15 = r15.Offset(0, 1)
+Loop
+
+Set r15 = r15.Offset(2, -1)
+r15.Select
+'MsgBox (r15.Address)
+
+str6 = "Sheet6!$D$14:" & r15.Address                 'concatinating the cell that we find as last cell of range
+
+    ActiveSheet.Shapes.AddChart2(201, xlColumnClustered).Select
+        ActiveChart.SetSourceData Source:=Range(str6)            'passsing concatinated string (str6) to source data which will show graph of that range
+ '   ActiveChart.SetSourceData Source:=Range("Sheet2!$M$1:r1.Address")
+
+
+Exit Sub
+line2: MsgBox ("Empty cell OR False value encountered, please fill data in all cells and Correctly then try again")
+Sheets("sheet6").Select
+
+End Sub
+
+
+Sub change_graph_type()
+'
+' Macro2 Macro
+'
+
+'
+Dim r15 As Range
+Dim str6 As String
+Set r15 = Range("E14")
+
+Do While r15.Value <> ""
+Set r15 = r15.Offset(0, 1)
+Loop
+
+Set r15 = r15.Offset(2, -1)
+r15.Select
+'MsgBox (r15.Address)
+str6 = "Sheet6!$D$14:" & r15.Address                 'concatinating the cell that we find as last cell of range
+    ActiveSheet.Shapes.AddChart2(201, xlLineMarkers).Select
+        ActiveChart.SetSourceData Source:=Range(str6)            'passsing concatinated string (str6) to source data which will show graph of that range
+ '   ActiveChart.SetSourceData Source:=Range("Sheet2!$M$1:r1.Address")
+
+
+End Sub
+
+
+Sub studentwise_attendence()
+
+Dim Rollno_Or_Name As String
+Dim r1 As Range
+Dim num_of_lec As Integer
+Dim Pcount As Integer
+Dim Acount As Integer
+Dim sav As String
+num = 0
+
+Sheets("sheet2").Select
+
+Rollno_Or_Name = InputBox("Enter Roll Number to se particular student attenedence")
+'user can enter roll no or name to find stuedents attendence
+
+If IsNumeric(Rollno_Or_Name) = True Then
+    GoTo Execute1
+ElseIf Rollno_Or_Name = "" Then                 ' if user clicks on cancel ,exits+if empty exists
+    Exit Sub
+
+ElseIf IsNumeric(Rollno_Or_Name) = False Then
+    GoTo Execute2
+
+
+End If
+
+
+
+
+Execute1:
+Set r1 = Range("A6")
+
+
+Do While r1.Value <> ""
+    If r1.Value = Rollno_Or_Name Then
+        sav = r1.Value                      ' saving roll numberin variable(sav) when it equals to input Rollno_Or_Name . later we check if variable (sav) IsEmpty=true, if so it means that entered INput Rollno_Or_Name  does not exists in sheeet
+        Set r1 = r1.Offset(0, 3)
+            
+            Do While num_of_lec < 50                    '50 represents maximum number of lectures
+                num_of_lec = num_of_lec + 1
+            
+                 If (r1.Value = "P") Then
+                    Pcount = Pcount + 1
+                    Set r1 = r1.Offset(0, 1)
+            
+                 ElseIf (r1.Value = "A") Then
+                    Acount = Acount + 1
+                    Set r1 = r1.Offset(0, 1)
+            
+                Else
+
+                    Set r1 = r1.Offset(0, 1)
+            
+                End If
+            
+            Loop
+    
+    Else
+ 
+        Set r1 = r1.Offset(1, 0)
+    End If
+    
+    
+Loop
+
+
+
+
+
+Execute2:
+Set r1 = Range("B6")
+
+
+Do While r1.Value <> ""
+    If r1.Value = Rollno_Or_Name Then
+        sav = r1.Value                      ' saving roll numberin variable(sav) when it equals to input Rollno_Or_Name . later we check if variable (sav) IsEmpty=true, if so it means that entered INput Rollno_Or_Name  does not exists in sheeet
+        Set r1 = r1.Offset(0, 2)
+            
+            Do While num_of_lec < 50                    '50 represents maximum number of lectures
+                num_of_lec = num_of_lec + 1
+            
+                 If (r1.Value = "P") Then
+                    Pcount = Pcount + 1
+                    Set r1 = r1.Offset(0, 1)
+            
+                 ElseIf (r1.Value = "A") Then
+                    Acount = Acount + 1
+                    Set r1 = r1.Offset(0, 1)
+            
+                Else
+
+                    Set r1 = r1.Offset(0, 1)
+            
+                End If
+            
+            Loop
+    
+    Else
+ 
+        Set r1 = r1.Offset(1, 0)
+    End If
+    
+    
+Loop
+
+
+
+
+
+
+
+
+
+' now check if entered Rollno_Or_Name  has been found on sheet or not, if not throw Error
+If sav = "" Then
+MsgBox ("Entered Rollno_Or_Name  does not exist!!")
+Sheets("sheet6").Select
+Exit Sub
+Else:
+GoTo plotgraph
+End If
+
+
+
+
+plotgraph:
+
+
+    'select sheet to put obtained value
+    Sheets("sheet6").Select
+    'create the temp table first any fixed position then
+    'select the address of cell Absent/Present and assign  obtained values to it
+    Range("E9").Value = Pcount
+    Range("F9").Value = Acount
+    
+    '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!IMPORTANT NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+'after creating temp table in excel we can create gragh by grabing values from that temp table else we cant directly pass values to graph,the values must be appering on the sheet.
+'now lets use this values to create graph
+
+
+    ActiveSheet.Shapes.AddChart2(251, xlPie).Select
+    ActiveChart.SetSourceData Source:=Range("Sheet6!$D$8:$F$9")
+    ActiveChart.ApplyLayout (2)
+    ActiveChart.Legend.Select
+    ActiveChart.Legend.LegendEntries(2).Select
+    ActiveChart.Legend.LegendEntries(1).Select
+    With Selection.Format.TextFrame2.TextRange.Font
+        .BaselineOffset = 0
+        .Size = 12
+    End With
+    ActiveChart.Legend.LegendEntries(2).Select
+    With Selection.Format.TextFrame2.TextRange.Font
+        .BaselineOffset = 0
+        .Size = 11
+    End With
+
+
+
+
+End Sub
+
+

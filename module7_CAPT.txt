@@ -1,0 +1,96 @@
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!phase-1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+'used to calculate the individual total of every practical
+
+Sub capt()
+Dim r As Range
+Dim r1 As Range
+Dim rollcount, no1, no2, no3 As Integer         'used to store the value of c,a,p
+Dim count2 As Integer
+Dim totalpractcount As Integer
+tpc = 0            'integer value of total practical which can be held
+rollcount = 0
+count2 = 0
+
+Sheets("sheet4").Select
+Set r1 = Range("A5")
+
+    Do While r1.Value <> ""
+           rollcount = rollcount + 1
+            Set r1 = r1.Offset(1)
+    Loop
+
+Set r = Range("F5")
+
+Do While tpc <> 10
+
+        tpc = tpc + 1
+        count2 = 0
+   Do While rollcount <> count2
+            count2 = count2 + 1
+        
+           Set r = r.Offset(0, -3)
+            no1 = r.Value                           'no1=C
+           Set r = r.Offset(0, 1)
+            no2 = r.Value                           'no1=A
+           Set r = r.Offset(0, 1)
+            no3 = r.Value                           'no1=P
+           Set r = r.Offset(0, 1)
+            Selection.NumberFormat = "0"            'no decimal total for error removal
+            r.FormulaR1C1 = no1 + no2 + no3         'sum(C+A+P)
+                         
+       Set r = r.Offset(1, 0)
+            
+    Loop
+    
+Set r = r.Offset(-rollcount, 4)
+r.Select
+
+Loop
+
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! phase-2 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+'used to calculate the total marks of all practical of every student
+
+Dim r3 As Range
+Dim r4 As Range
+Dim p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 As Integer 'used to store the value of t of every practicals
+
+Sheets("sheet4").Select
+Set r3 = Range("F5")
+Set r4 = Range("AQ5")
+count2 = 0
+   Do While rollcount <> count2
+            count2 = count2 + 1
+       ' MsgBox (count2)
+           p1 = r3.Value
+           Set r3 = r3.Offset(0, 4)
+            p2 = r3.Value
+           Set r3 = r3.Offset(0, 4)
+            p3 = r3.Value
+           Set r3 = r3.Offset(0, 4)
+            p4 = r3.Value
+           Set r3 = r3.Offset(0, 4)
+            p5 = r3.Value
+            Set r3 = r3.Offset(0, 4)
+            p6 = r3.Value
+            Set r3 = r3.Offset(0, 4)
+            p7 = r3.Value
+            Set r3 = r3.Offset(0, 4)
+            p8 = r3.Value
+            Set r3 = r3.Offset(0, 4)
+            p9 = r3.Value
+            Set r3 = r3.Offset(0, 4)
+            p10 = r3.Value
+           
+                                           'the total wala column
+        
+            r4.Value = p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9 + p10
+         Set r3 = r3.Offset(1, -36)
+         r3.Select
+       '  MsgBox (" im here")
+       Set r4 = r4.Offset(1, 0)
+            
+   Loop
+    
+
+End Sub
+

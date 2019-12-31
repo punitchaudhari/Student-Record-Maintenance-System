@@ -1,0 +1,24 @@
+Sub Add_Roll_Numbers()
+Dim i1 As String
+Dim i As Integer
+Sheets("sheet1").Range("a2").Select
+
+i1 = InputBox("Enter Total Count Of Roll Numbers")
+
+If IsNumeric(i1) = True Then
+    i = i1
+    For i = 1 To i
+    ActiveCell.Value = i
+    ActiveCell.Offset(1, 0).Activate
+    Next i
+
+ElseIf i1 = "" Then
+    Exit Sub
+
+Else
+    MsgBox ("Invalid Input!!!")
+
+End If
+
+End Sub
+

@@ -1,0 +1,156 @@
+
+Sub alert_on_absent_practical()
+
+'here first aim is to check if all cells are filled in (COLUMN D,column E,COLUMN F) on sheet 2 TO get alert on 4th absenty of student
+'if any cell is not filled in specific range you will get error in next program that you are implementing for 4th absenty calculation
+
+
+Dim r1 As Range
+Dim count1 As Integer
+count1 = 0
+Sheets("sheet3").Select
+Set r1 = Range("A6")
+    Do While r1.Value <> ""
+           count1 = count1 + 1
+            Set r1 = r1.Offset(1)
+    Loop
+
+'the above code counts the total number of students FROM SHEET 1
+'and saves it to varaiable (count1)
+
+
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!          PHASE 1          !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+'the below code keeps running until the empty cell is encountered and alongside we are counting
+'suppose we have 10 roll nos and 3rd cell is empty then here (do while condtion gets false),so we have count2=3
+'now compare count1=count2 if they are not equal then it means we have not reached to the end, meaning that we have (EMPTY CELL) in middle
+Dim r2 As Range
+Dim count2 As Integer
+Dim iteration_count, iteration_till As Integer
+count2 = 0
+iteration_count = 0
+iteration_till_count = 0
+Sheets("Sheet3").Select
+Set r2 = Range("D6")
+
+    Set r9 = Range("D6")                                                         ' this finds the max iteration value,till which we have to perform loop that finds empty cell
+    Do While r9.Value <> ""                                                      'later we compare this value to variable (iteration count) to variable(iteration_till_count) if they are equal it means we have to stop checking empty cell
+    iteration_till_count = iteration_till_count + 1                              '
+        Set r9 = r9.Offset(0, 1)                                                 '
+    Loop                                                                         '
+
+    Do While r2.Value <> ""                                                      'loop till we find null value vertically starting from D4
+     count2 = count2 + 1
+            
+            If count2 >= count1 Then                                             'here variable count1(is coumpted before,which has the value of total roll no count) compared to count 2 IF they are EQUAL ,means we have to offset to next column i.e  E4 and then repeat the proscces till we encounter empty cell
+            Set r2 = r2.Offset(-count1, 1)
+                count2 = 0                                                       'reset count2 . it again counts from 1 to 10 for every next iteration
+                iteration_count = iteration_count + 1                            'counts and increment how many iterations till now
+                
+                If iteration_count = iteration_till_count Then Exit Do            ' if they are equal stop seraching empty cell
+            End If
+            
+    Set r2 = r2.Offset(1, 0)
+    Loop
+
+
+
+If iteration_count = iteration_till_count Then                              ' if all cells are filled this conditon become true,AND NOW WE PERFORM ALGORITHM FOR CALCULATING 3RD ABSENCE OF STUDENT
+'MsgBox ("all cells are filled")                                            ' AND IF THIS CONDITION IS NOT TRUE THEN WE ARE OBVIOUSLY HAVE EMPTY CELL
+                                                                            'so it goes to Else condtion
+
+
+
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!          PHASE 2          !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Dim r5 As Range
+Dim v1, v2, v3 As String
+Dim temp_count
+Dim i As Integer
+Sheets("sheet3").Select
+Set r5 = Range("D6")
+    
+    
+    
+   For i = 1 To count1         'currently (count1) is holding the value of total no of students
+    
+    
+    
+    
+    
+        
+        Do While r5.Value <> ""
+        Set r5 = r5.Offset(0, 1)
+      
+        Loop
+        
+    
+Set r5 = r5.Offset(0, -3)
+v1 = r5.Value
+Set r5 = r5.Offset(0, 1)
+v2 = r5.Value
+Set r5 = r5.Offset(0, 1)
+v3 = r5.Value
+        
+        
+        If v1 = "A" And v2 = "A" And v3 = "A" Then
+            r5.Interior.ColorIndex = 3                            ' setting cell color to RED to identify as alert
+
+        End If
+
+Set r5 = r5.Offset(1, -3)
+'MsgBox (temp_count)
+
+
+
+
+
+
+
+   Next i
+
+
+                        'following few lines code  is for removing red alert
+Dim choice As Integer
+Dim color_reset As Range
+Set color_reset = Range("D6")
+
+     Do While color_reset.Value <> ""
+         Set color_reset = color_reset.Offset(0, 1)
+     Loop
+     Set color_reset = color_reset.Offset(0, -1)
+
+choice = MsgBox("Do you want to remove alerted cells?", 4, "Choose Options")
+
+        If choice = 6 Then                                          'here 6 represent user has selected yes its by default value available
+
+            Do While color_reset <> ""
+
+            color_reset.Interior.Color = xlNone
+            Set color_reset = color_reset.Offset(1, 0)
+
+            Loop
+        End If
+
+
+
+
+
+Else
+MsgBox ("plese fill at least 3 days of presensce or absence of student,inorder to get alert on 3 days of continues absence of student")
+MsgBox ("please fill empty cells!!")
+
+
+End If
+
+
+
+
+
+
+
+
+End Sub
+
+
+

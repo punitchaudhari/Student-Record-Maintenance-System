@@ -1,0 +1,58 @@
+Sub accracy()
+Sheets("sheet5").Select
+Dim diff, count As Integer
+Dim r As Range
+Dim pldate As String
+Dim codate As String
+Dim percentage As Integer
+Dim percentage2 As String
+Set r = Range("B4")
+Set r2 = Range("C4")
+Set r3 = Range("I4")
+
+
+count = 0
+
+
+Do While count < 8
+    count = count + 1
+    pldate = r.Value
+    codate = r2.Value
+
+        If (r.Value = "" Or r2.Value = "") Then
+
+            Set r = r.Offset(1, 0)
+            Set r2 = r2.Offset(1, 0)
+            Set r3 = r3.Offset(1, 0)
+
+
+        Else
+
+            diff = datediff("d", pldate, codate)
+            'MsgBox (diff)
+
+
+            If (diff > 10) Then
+                 r3.Value = 0 & "%"
+            
+            Else
+            
+                percentage = (diff / 10) * 100
+                percentage = 100 - percentage
+                
+                percentage2 = percentage
+                percentage2 = percentage2 & "%"
+                
+                r3.Value = percentage2
+            
+                Set r = r.Offset(1, 0)
+                Set r2 = r2.Offset(1, 0)
+                Set r3 = r3.Offset(1, 0)
+            End If
+        End If
+
+
+Loop
+
+End Sub
+

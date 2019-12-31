@@ -1,0 +1,90 @@
+Sub send_email()
+
+
+
+'follow the steps to use this functionality which requires to enable some options
+'step1: in vba editor go to Tools tab>References>
+'step2: then some new window will pop up in that CHECK/TICK MARK "Microsoft CDO for Windows 2000 Library" this option and click ok
+'step3: now youre good to go
+
+
+'below setting up some mail Objects
+
+
+Dim CDO_Mail As Object
+Dim CDO_Config As Object
+Dim SMTP_Config As Variant       'simple mail transfer protocol
+Dim strSubject As String
+Dim strFrom As String
+Dim strTo As String
+Dim strCc As String
+Dim strBcc As String
+Dim strBody As String
+
+
+
+strSubject = "Results from Excel Spreadsheet"
+strFrom = "punit07chaudhari@gmail.com"
+strTo = "punit7chaudhari@gmail.com"
+strCc = ""
+strBcc = ""
+strBody = "thia is the message sent from macros vba "    'here you can write the preset messaage that you want to send in the mail
+
+
+
+
+
+
+
+
+
+'Configure CDO to Use an External SMTP
+'The next section of code is where you will configure CDO to use any external SMTP server that you want to use
+
+
+Set CDO_Mail = CreateObject("CDO.Message")
+On Error GoTo Error_Handling
+
+Set CDO_Config = CreateObject("CDO.Configuration")
+CDO_Config.Load -1
+
+Set SMTP_Config = CDO_Config.Fields
+
+With SMTP_Config
+ .Item("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
+ .Item("http://schemas.microsoft.com/cdo/configuration/smtpserver") = "smtp.gmail.com"
+ .Item("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") = 1
+ .Item("http://schemas.microsoft.com/cdo/configuration/sendusername") = "punit07chaudhari@gmail.com"
+ .Item("http://schemas.microsoft.com/cdo/configuration/sendpassword") = "password"
+ .Item("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = 25
+ .Item("http://schemas.microsoft.com/cdo/configuration/smtpusessl") = True
+ .Update
+End With
+
+With CDO_Mail
+ Set .Configuration = CDO_Config
+End With
+
+
+
+
+'up till now all configuration is done
+'assign field to CDO mail OBjects and send the mail
+
+
+
+CDO_Mail.Subject = strSubject
+CDO_Mail.From = strFrom
+CDO_Mail.To = strTo
+CDO_Mail.TextBody = strBody
+CDO_Mail.CC = strCc
+CDO_Mail.BCC = strBcc
+CDO_Mail.Send
+
+Error_Handling:
+If Err.Description <> "" Then MsgBox Err.Description
+
+
+
+End Sub
+

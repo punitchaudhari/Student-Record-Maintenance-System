@@ -1,0 +1,144 @@
+Sub cpy_dat()
+    Dim r As Range
+    Dim r2 As Range
+    Dim r3 As Range
+    Dim r4 As Range
+    Dim r7 As Range
+    Dim countrollno As Integer
+    countrollno = 0
+    
+    Sheets("sheet1").Select
+    Set r = Range("A2")
+    Sheets("sheet2").Select
+    Set r2 = Range("A6")
+    Sheets("sheet3").Select
+    Set r5 = Range("A6")
+    Sheets("sheet4").Select
+    Set r7 = Range("A5")
+        
+        Do While r.Value <> ""
+        countrollno = countrollno + 1
+            r2.Value = r.Value
+            r5.Value = r.Value
+            r7.Value = r.Value
+            Set r = r.Offset(1)
+            Set r2 = r2.Offset(1)
+            Set r5 = r5.Offset(1)
+            Set r7 = r7.Offset(1)
+        Loop
+       
+    Sheets("sheet1").Select
+    Set r3 = Range("B2")
+    Sheets("sheet2").Select
+    Set r4 = Range("B6")
+    Sheets("sheet3").Select
+    Set r6 = Range("B6")
+    Sheets("sheet4").Select
+    Set r7 = Range("B5")
+    
+        Do While r3.Value <> ""
+            r4.Value = r3.Value
+            r6.Value = r3.Value
+            r7.Value = r3.Value
+            Set r3 = r3.Offset(1)
+            Set r4 = r4.Offset(1)
+            Set r6 = r6.Offset(1)
+            Set r7 = r7.Offset(1)
+        Loop
+        
+        
+        
+  ' below code added later for providing dropdown options
+        
+        
+        
+        
+        
+        
+        
+  
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!add dropdown for sheet2(theory attendence)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Dim rng As Range
+Dim MyList1(2), str As String
+MyList1(0) = "A"
+MyList1(1) = "P"
+MyList1(2) = "O"
+
+Sheets("Sheet2").Select
+
+Set rng = Range("D6")
+countrollno = countrollno - 1
+
+Set rng = rng.Offset(countrollno, 49)
+str = rng.Address
+
+
+str = "D6:" & str
+With Range(str).Validation
+    .Delete
+    .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, _
+         Operator:=xlBetween, Formula1:=Join(MyList1, ",")
+End With
+
+
+
+
+' uncomment the below 1 line of code inorder to remove validation, and run code again
+'if it doesnt work insted of str provide full range of which you want to remove validation/dropdown list options
+
+
+'Range(str).Validation.Delete
+
+
+
+
+'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!add dropdown for sheet3(practicle attendence)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+Dim rng1 As Range
+Dim MyList2(2), str2 As String
+MyList2(0) = "A"
+MyList2(1) = "P"
+MyList2(2) = "O"
+
+Sheets("Sheet3").Select
+
+Set rng1 = Range("D6")
+'countrollno = countrollno - 1
+
+Set rng1 = rng1.Offset(countrollno, 9)
+str2 = rng1.Address
+
+
+str2 = "D6:" & str2
+With Range(str2).Validation
+    .Delete
+    .Add Type:=xlValidateList, AlertStyle:=xlValidAlertStop, _
+         Operator:=xlBetween, Formula1:=Join(MyList2, ",")
+End With
+
+
+
+
+' uncomment the below 1 line of code inorder to remove validation, and run code again
+'if it doesnt work insted of str provide full range of which you want to remove validation/dropdown list options
+
+
+'Range(str2).Validation.Delete
+
+
+
+
+
+
+
+
+        
+        
+        
+        
+         
+         Sheets("sheet1").Select
+        MsgBox ("Data updated on all sheets")
+End Sub
